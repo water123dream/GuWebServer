@@ -7,14 +7,14 @@
 本项目是参考了陈硕的muduo高性能服务器框架，以一个本人编写的最简单的多路复用的单线程tcp微型服务器为基础，逐步加入muduo的Reactor模式而来的。
 技术要点如下。
 - 使用Epoll水平触发的IO多路复用技术，非阻塞IO，使用Reactor模式
-- 使用多线程充分利用多核CPU，并使用线程池避免线程频繁创建销毁的开销
+- 使用多线程充分利用多核CPU，并使用线程池避免线程频繁创建销毁的开销,使用eventfd实现了线程的异步唤醒
 - 使用基于小根堆的定时器关闭超时请求
-- 主线程只负责accept请求，并以Round Robin的方式分发给其它IO线程(兼计算线程)，锁的争用只会出现在主线程和某一特定线程中
-- 使用eventfd实现了线程的异步唤醒
-- 使用双缓冲区技术实现了简单的异步日志系统
-- 为减少内存泄漏的可能，使用智能指针等RAII机制
-- 使用状态机解析了HTTP请求,支持管线化
-- 支持优雅关闭连接  
+- 主线程只负责accept请求，并以轮询的方式分发给其它IO线程(兼计算线程)
+- 使用双缓冲区技术实现了简单的异步日志系统，并进行压测，效果好于muduo
+- 使用智能指针等RAII机制管理内存，并实现http的get，post请求
+- 支持优雅关闭连接
+- 对网络库进行了横向和纵向压测，结果良好
+- 以这个网络库为后台服务器，搭建个人网站，并加入登录系统，使用数据库对登录身份进行验证，有兴趣的可以访问：![http://39.98.218.54:8080/](http://39.98.218.54:8080/)
 
 项目框架图如下所示：
 ![框架图](https://github.com/water123dream/GuWebServer/tree/master/pic/model.png)
@@ -29,12 +29,25 @@
 
 ![日志长连接测试折线图](https://github.com/water123dream/GuWebServer/tree/master/pic/longlog.png)
 
-##### 2、压力测试
-压力测试使用的是开源压测工具webbench，并且以muduo和另一个类muduo开源网络库WebServer(https://github.com/linyacool/WebServer) 作为参考对象：
+##### 2、网络库压力测试
+压力测试使用的是开源压测工具webbench。
+###### ①横向压测
+以muduo和另一个类muduo开源网络库WebServer(https://github.com/linyacool/WebServer) 作为比较对象，结果如下：
 
 ![压测数据表](https://github.com/water123dream/GuWebServer/tree/master/pic/pressuretest.png)
 
 ![压测柱状图](https://github.com/water123dream/GuWebServer/tree/master/pic/pressurepic.png)
+###### ②纵向压测
+测试自己所写库的最大qps
+- 测试条件：
+处理器：i5-4210M CPU
+RAM：12G
+系统类型：64位
+- 结果：
+短连接最大QPS：24577.4
+长连接最大QPS：82834
+![短连接最大连接图](https://github.com/water123dream/GuWebServer/blob/master/pic/%E7%9F%AD%E8%BF%9E%E6%8E%A5%E6%9C%80%E5%A4%A7%E8%BF%9E%E6%8E%A5%E6%95%B0.png)
+![长连接最大连接图](https://github.com/water123dream/GuWebServer/blob/master/pic/%E9%95%BF%E8%BF%9E%E6%8E%A5%E6%9C%80%E5%A4%A7%E8%BF%9E%E6%8E%A5%E6%95%B0.png)
 ### 五、项目版本
 ##### 1、版本一
 这个版本是最简单的版本，在我学习epoll函数时，写过一个单线程的echotcp服务器，我将这个程序按照muduo的结构改写成C++版本的，虽然很简单，但是通过这个版本，对于muduo中每个类的理解加深了许多。
