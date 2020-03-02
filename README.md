@@ -40,12 +40,12 @@
 ###### ②纵向压测
 测试自己所写库的最大qps
 - 测试条件：
-处理器：i5-4210M CPU
-RAM：12G
-系统类型：64位
+  - 处理器：i5-4210M CPU
+  - RAM：12G
+  - 系统类型：64位
 - 结果：
-短连接最大QPS：24577.4
-长连接最大QPS：82834
+  - 短连接最大QPS：24577.4
+  - 长连接最大QPS：82834
 ![短连接最大连接图](https://github.com/water123dream/GuWebServer/blob/master/pic/%E7%9F%AD%E8%BF%9E%E6%8E%A5%E6%9C%80%E5%A4%A7%E8%BF%9E%E6%8E%A5%E6%95%B0.png)
 ![长连接最大连接图](https://github.com/water123dream/GuWebServer/blob/master/pic/%E9%95%BF%E8%BF%9E%E6%8E%A5%E6%9C%80%E5%A4%A7%E8%BF%9E%E6%8E%A5%E6%95%B0.png)
 ### 五、项目版本
